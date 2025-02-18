@@ -1,11 +1,12 @@
 import express from "express";
 import { Payment } from "mercadopago";
 import axios from "axios";
-
 const app = express();
 app.use(express.json());
 
 const PORT = process.env.PORT || 3000;
+const EXTERNAL_URL =
+  process.env.RENDER_EXTERNAL_URL || `http://localhost:${PORT}`;
 
 const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
 
@@ -40,26 +41,20 @@ app.put("/payment", async (req, res) => {
 app.post("/webhook", async (req, res) => {
   const { data, action } = req.body;
 
-  console.log(1);
-
   if (action !== "payment.updated") {
     res.sendStatus(400);
     return;
   }
 
-  console.log(2);
+  res.sendStatus(200);
 
   // NOTE: whatever you want to do
   try {
-    const response = await axios(`/payment/${data.id}`);
-    console.log(3);
-
+    const response = await axios(`${EXTERNAL_URL}/payment/${data.id}`);
     console.log(response.data);
   } catch (error) {
     console.error(error);
-  } finally {
-    res.sendStatus(200);
   }
 });
 
-app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
+app.listen(PORT, () => console.log(`Server running on ${EXTERNAL_URL}`));
