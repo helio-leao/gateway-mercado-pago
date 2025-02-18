@@ -11,12 +11,11 @@ const PORT = process.env.PORT || 3000;
 
 const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
 
-app.get("/payment", async (req, res) => {
-  try {
-    const information = await new Payment({ accessToken }).get({
-      id: req.headers.paymentid,
-    });
+app.get("/payment/:id", async (req, res) => {
+  const { id } = req.body;
 
+  try {
+    const information = await new Payment({ accessToken }).get({ id });
     res.json(information);
   } catch (error) {
     res.status(500).json(error);
@@ -24,14 +23,14 @@ app.get("/payment", async (req, res) => {
 });
 
 app.put("/payment", async (req, res) => {
+  const { email, value } = req.body;
+
   try {
     const paymentData = await new Payment({ accessToken }).create({
       body: {
-        transaction_amount: Number(req.headers.value),
+        transaction_amount: Number(value),
         payment_method_id: "pix",
-        payer: {
-          email: "hmtleao@hotmail.com",
-        },
+        payer: { email },
       },
     });
     res.json(paymentData);
@@ -42,15 +41,16 @@ app.put("/payment", async (req, res) => {
 });
 
 app.post("/webhook", async (req, res) => {
-  if (req.body.action !== "payment.update") {
+  const { data, action } = req.body;
+
+  if (action !== "payment.update") {
     res.status(500).json({ error: "payment.update is false" });
+    return;
   }
 
   try {
-    const { data } = await axios("/payment", {
-      headers: { paymentid: req.body.data.id },
-    });
-    res.json(data);
+    const response = await axios(`/payment/${data.id}`);
+    res.json(response.data);
   } catch (error) {
     console.error(error);
     res.status(500).json(error);
