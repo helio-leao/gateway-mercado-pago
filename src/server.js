@@ -1,18 +1,16 @@
 import express from "express";
-import cors from "cors";
 import { Payment } from "mercadopago";
 import axios from "axios";
 
 const app = express();
 app.use(express.json());
-app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
 const accessToken = process.env.MERCADO_PAGO_ACCESS_TOKEN;
 
 app.get("/payment/:id", async (req, res) => {
-  const { id } = req.body;
+  const { id } = req.params;
 
   try {
     const information = await new Payment({ accessToken }).get({ id });
@@ -35,7 +33,6 @@ app.put("/payment", async (req, res) => {
     });
     res.json(paymentData);
   } catch (error) {
-    console.error(error);
     res.status(500).json(error);
   }
 });
@@ -52,7 +49,6 @@ app.post("/webhook", async (req, res) => {
     const response = await axios(`/payment/${data.id}`);
     res.json(response.data);
   } catch (error) {
-    console.error(error);
     res.status(500).json(error);
   }
 });
