@@ -40,6 +40,8 @@ app.put("/payment", async (req, res) => {
 app.post("/webhook", async (req, res) => {
   const { data, action } = req.body;
 
+  console.log(req.body);
+
   if (action !== "payment.update") {
     res.status(500).json({ error: "payment.update is false" });
     return;
