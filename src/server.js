@@ -40,14 +40,20 @@ app.put("/payment", async (req, res) => {
 app.post("/webhook", async (req, res) => {
   const { data, action } = req.body;
 
+  console.log(1);
+
   if (action !== "payment.updated") {
     res.sendStatus(400);
     return;
   }
 
+  console.log(2);
+
   // NOTE: whatever you want to do
   try {
     const response = await axios(`/payment/${data.id}`);
+    console.log(3);
+
     console.log(response.data);
   } catch (error) {
     console.error(error);
