@@ -28,7 +28,7 @@ app.put("/payment", async (req, res) => {
   try {
     const paymentData = await new Payment({ accessToken }).create({
       body: {
-        transaction_amount: Number(value),
+        transaction_amount: value,
         payment_method_id: "pix",
         payer: { email },
       },
