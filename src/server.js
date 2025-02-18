@@ -38,21 +38,23 @@ app.put("/payment", async (req, res) => {
 });
 
 app.post("/webhook", async (req, res) => {
-  const { data, action } = req.body;
+  res.json(req.body);
+  // const { data, action } = req.body;
 
-  console.log(req.body);
+  // console.log(req.body);
 
-  if (action !== "payment.update") {
-    res.status(500).json({ error: "payment.update is false" });
-    return;
-  }
+  // if (action !== "payment.update") {
+  //   res.status(500).json({ error: "payment.update is false" });
+  //   return;
+  // }
 
-  try {
-    const response = await axios(`/payment/${data.id}`);
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json(error);
-  }
+  // try {
+  //   const response = await axios(`/payment/${data.id}`);
+  //   res.json(response.data);
+  // } catch (error) {
+  //   console.log(error);
+  //   res.status(500).json(error);
+  // }
 });
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}...`));
