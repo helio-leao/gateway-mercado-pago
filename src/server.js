@@ -38,7 +38,9 @@ app.put("/payment", async (req, res) => {
 });
 
 app.post("/webhook", async (req, res) => {
-  res.json(req.body);
+  console.log(req.body);
+  res.sendStatus(200);
+
   // const { data, action } = req.body;
 
   // console.log(req.body);
