@@ -22,17 +22,6 @@ router.post("/webhook", async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const information = await new Payment({ accessToken }).get({ id });
-    res.json(information);
-  } catch (error) {
-    res.status(500).json(error);
-  }
-});
-
 router.post("/pix", async (req, res) => {
   const { email, value } = req.body;
 
@@ -45,6 +34,36 @@ router.post("/pix", async (req, res) => {
       },
     });
     res.json(paymentData);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.post("/credit-card", async (req, res) => {
+  const { email, value, token, installments } = req.body;
+
+  try {
+    const paymentData = await new Payment({ accessToken }).create({
+      body: {
+        transaction_amount: value,
+        payment_method_id: "credit_card",
+        payer: { email },
+        token,
+        installments,
+      },
+    });
+    res.json(paymentData);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const information = await new Payment({ accessToken }).get({ id });
+    res.json(information);
   } catch (error) {
     res.status(500).json(error);
   }
