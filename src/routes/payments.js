@@ -40,13 +40,13 @@ router.post("/pix", async (req, res) => {
 });
 
 router.post("/credit-card", async (req, res) => {
-  const { email, value, token, installments } = req.body;
+  const { email, value, token, installments, payment_method_id } = req.body;
 
   try {
     const paymentData = await new Payment({ accessToken }).create({
       body: {
         transaction_amount: value,
-        payment_method_id: "credit_card",
+        payment_method_id, // i.e. visa, master...
         payer: { email },
         token,
         installments,
