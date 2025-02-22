@@ -40,18 +40,10 @@ router.post("/pix", async (req, res) => {
 });
 
 router.post("/credit-card", async (req, res) => {
-  const { email, value, token, installments, payment_method_id } = req.body;
+  const { body } = req;
 
   try {
-    const paymentData = await new Payment({ accessToken }).create({
-      body: {
-        transaction_amount: value,
-        payment_method_id, // i.e. visa, master...
-        payer: { email },
-        token,
-        installments,
-      },
-    });
+    const paymentData = await new Payment({ accessToken }).create({ body });
     res.json(paymentData);
   } catch (error) {
     res.status(500).json(error);
